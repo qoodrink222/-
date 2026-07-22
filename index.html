@@ -2,12 +2,12 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>簡易字典</title>
+  <title>簡易字典 + AI 問答</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     h1 { text-align: center; }
     input, button { padding: 8px; margin: 5px; }
-    .result, .favorites { margin-top: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+    .result, .favorites, .ai { margin-top: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
     .favorites ul { list-style: none; padding: 0; }
     .favorites li { margin: 5px 0; }
     .favorites button { margin-left: 10px; }
@@ -25,6 +25,13 @@
     <ul id="favoriteList"></ul>
   </div>
 
+  <div class="ai">
+    <h2>問 AI 問題</h2>
+    <input type="text" id="aiInput" placeholder="輸入你的問題">
+    <button onclick="askAI()">送出</button>
+    <div id="aiResult"></div>
+  </div>
+
   <script>
     // 內建字典資料
     const dictionary = {
@@ -33,7 +40,7 @@
       "love": "n. 強烈的情感或喜愛；v. 喜歡或深深關心某人/事物。"
     };
 
-    // 讀取收藏
+    // 收藏功能
     let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
     function lookupWord() {
@@ -74,8 +81,25 @@
       });
     }
 
-    // 初始化顯示收藏
+    // 初始化收藏
     renderFavorites();
+
+    // 假 AI 回答
+    function askAI() {
+      const question = document.getElementById("aiInput").value;
+      const responseDiv = document.getElementById("aiResult");
+
+      const fakeAnswers = [
+        "這是一個很有趣的問題！",
+        "我覺得可以從不同角度來思考。",
+        "目前沒有確切答案，但可以嘗試查資料。",
+        "這涉及到語言學與文化背景。",
+        "簡單來說，就是要多練習！"
+      ];
+
+      const randomAnswer = fakeAnswers[Math.floor(Math.random() * fakeAnswers.length)];
+      responseDiv.innerHTML = `<strong>AI 回答：</strong> ${randomAnswer}`;
+    }
   </script>
 </body>
 </html>
