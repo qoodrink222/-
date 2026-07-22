@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI 字典練習</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
+    .word-item { margin: 5px 0; }
+    button { margin-left: 10px; }
+  </style>
+</head>
+<body>
+  <h1>AI 字典練習</h1>
+  <input type="text" id="wordInput" placeholder="輸入英文單字">
+  <button onclick="searchWord()">查詢</button>
+
+  <div id="result"></div>
+
+  <h2>搜尋紀錄</h2>
+  <div id="history"></div>
+
+  <h2>收藏單字</h2>
+  <div id="favorites"></div>
+
+  <script>
+    const history = [];
+    const favorites = [];
+
+    async function searchWord() {
+      const word = document.getElementById("wordInput").value.trim();
+      if (!word) return;
+
+      // 使用 Wordnik API (需要申請免費 API key)
+      const apiKey = "YOUR_API_KEY"; // ← 這裡換成你自己的 API key
+      const url = `https://api.wordnik.com/v4/word.json/${word}/definitions?limit=1&api_key=${apiKey}`;
+
+      let translation = "暫無資料";
+      let partOfSpeech = "-";
+      let example = "-";
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.length > 0) {
+          translation = data[0].text;
+          partOfSpeech = data[0].partOfSpeech || "-";
+        }
+      } catch (error) {
+        translation = "查詢失敗，請檢查 API key 或網路";
+      }
+
+      document.getElementById("result").innerHTML = `
+        <p><strong>${word}</strong> (${partOfSpeech})</p>
+        <p>翻譯/定義：${translation}</p>
+        <p>例句：${example}</p>
+        <button onclick="addFavorite('${word}')">加入收藏</button>
+      `;
+
+      history.push(word);
+      renderHistory();
+    }
+
+    function renderHistory() {
+      document.getElementById("history").innerHTML = history
+        .map(w => `<div class="word-item">${w}</div>`)
+        .join("");
+    }
+
+    function addFavorite(word) {
+      if (!favorites.includes(word)) favorites.push(word);
+      renderFavorites();
+    }
+
+    function renderFavorites() {
+      document.getElementById("favorites").innerHTML = favorites
+        .map(w => `<div class="word-item">${w}</div>`)
+        .join("");
+    }
+  </script>
+</body>
+</html>
