@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>簡易字典</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { text-align: center; }
+    input, button { padding: 8px; margin: 5px; }
+    .result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>我的字典</h1>
+  <input type="text" id="wordInput" placeholder="輸入單字">
+  <button onclick="lookupWord()">查詢</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    // 內建字典資料
+    const dictionary = {
+      "apple": "n. 一種常見水果，紅色或綠色，味道甜。",
+      "run": "v. 用腳快速移動；n. 一段持續的運動或表演。",
+      "love": "n. 強烈的情感或喜愛；v. 喜歡或深深關心某人/事物。"
+    };
+
+    function lookupWord() {
+      const word = document.getElementById("wordInput").value.toLowerCase();
+      const resultDiv = document.getElementById("result");
+
+      if (dictionary[word]) {
+        resultDiv.innerHTML = `<strong>${word}</strong>: ${dictionary[word]}`;
+      } else {
+        resultDiv.innerHTML = "暫無資料，請換個單字試試。";
+      }
+    }
+  </script>
+</body>
+</html>
