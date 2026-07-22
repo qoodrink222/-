@@ -7,7 +7,10 @@
     body { font-family: Arial, sans-serif; margin: 20px; }
     h1 { text-align: center; }
     input, button { padding: 8px; margin: 5px; }
-    .result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+    .result, .favorites { margin-top: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+    .favorites ul { list-style: none; padding: 0; }
+    .favorites li { margin: 5px 0; }
+    .favorites button { margin-left: 10px; }
   </style>
 </head>
 <body>
@@ -17,6 +20,11 @@
 
   <div class="result" id="result"></div>
 
+  <div class="favorites">
+    <h2>收藏單字</h2>
+    <ul id="favoriteList"></ul>
+  </div>
+
   <script>
     // 內建字典資料
     const dictionary = {
@@ -25,16 +33,49 @@
       "love": "n. 強烈的情感或喜愛；v. 喜歡或深深關心某人/事物。"
     };
 
+    // 讀取收藏
+    let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
     function lookupWord() {
       const word = document.getElementById("wordInput").value.toLowerCase();
       const resultDiv = document.getElementById("result");
 
       if (dictionary[word]) {
-        resultDiv.innerHTML = `<strong>${word}</strong>: ${dictionary[word]}`;
+        resultDiv.innerHTML = `
+          <strong>${word}</strong>: ${dictionary[word]} 
+          <button onclick="addFavorite('${word}')">⭐ 收藏</button>
+        `;
       } else {
         resultDiv.innerHTML = "暫無資料，請換個單字試試。";
       }
     }
+
+    function addFavorite(word) {
+      if (!favorites.includes(word)) {
+        favorites.push(word);
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+        renderFavorites();
+      }
+    }
+
+    function removeFavorite(word) {
+      favorites = favorites.filter(item => item !== word);
+      localStorage.setItem("favorites", JSON.stringify(favorites));
+      renderFavorites();
+    }
+
+    function renderFavorites() {
+      const list = document.getElementById("favoriteList");
+      list.innerHTML = "";
+      favorites.forEach(word => {
+        const li = document.createElement("li");
+        li.innerHTML = `${word} <button onclick="removeFavorite('${word}')">❌ 移除</button>`;
+        list.appendChild(li);
+      });
+    }
+
+    // 初始化顯示收藏
+    renderFavorites();
   </script>
 </body>
 </html>
